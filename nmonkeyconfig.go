@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
-	"neomech/lib/neo"
+	"github.com/simulatedsimian/neo"
 	"os"
 	"regexp"
 	"strings"

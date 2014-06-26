@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"neomech/lib/neo"
+	"github.com/simulatedsimian/neo"
 	"net"
 	"os"
 	"os/exec"
