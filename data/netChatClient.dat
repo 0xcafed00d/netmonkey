@@ -1,0 +1,11 @@
+#comment
+
+endpoint net = socketConnect (localhost:9090)
+endpoint in  = stdin ()
+endpoint out = stdout ()
+
+connect net -> out
+connect in -> net
+
+
+

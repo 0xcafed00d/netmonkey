@@ -1,0 +1,16 @@
+#comment
+
+endpoint sockCon = socketConnect (www.google.com:80)
+endpoint sockLis = socketListen (:9090)
+endpoint stdin   = stdin ()
+endpoint stdout  = stdout ()
+endpoint stderr  = stderr ()
+endpoint filein  = fileReader (nm.go)
+endpoint fileout = fileWriter (test.out)
+#endpoint serial  = serialPort (9600:/dev/serial)
+
+connect sockCon -> uppercase() -> delayLine(100) -> stdout
+connect stdin -> uppercase() -> delay(100) -> sockCon
+
+
+

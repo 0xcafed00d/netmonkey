@@ -1,0 +1,14 @@
+#comment
+
+param host the host name
+param port the port number
+param proc the process name
+
+endpoint proc = echo ()
+endpoint stdio = stdio ()
+
+connect proc -> stdio
+connect stdio -> proc
+
+
+

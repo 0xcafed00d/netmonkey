@@ -1,0 +1,11 @@
+#comment
+
+endpoint echo = echo ()
+endpoint net = socketListen (:9090)
+endpoint out = stdio ()
+
+connect echo -> tap(out) -> net
+connect net -> echo
+
+
+

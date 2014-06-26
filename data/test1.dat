@@ -1,0 +1,11 @@
+#comment
+
+endpoint echo = echo ()
+endpoint out  = stdout ()
+endpoint in  = stdin ()
+
+connect echo -> toHex() -> out
+connect in -> echo
+
+
+

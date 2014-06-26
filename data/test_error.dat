@@ -1,0 +1,9 @@
+#comment
+
+endpoint sock = socketConnect (localhost:9090)
+endpoint out  = stdout ()
+
+connect sock > out
+
+
+

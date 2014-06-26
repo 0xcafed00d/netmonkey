@@ -1,0 +1,11 @@
+#comment
+
+endpoint sock = socketConnect (localhost:9090)
+endpoint out  = stdout ()
+endpoint in  = stdin ()
+
+connect sock -> toHex() -> out
+connect in -> sock
+
+
+

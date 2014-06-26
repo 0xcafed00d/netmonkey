@@ -1,0 +1,15 @@
+
+TODO:
+	Extend Endpoint dependencies
+
+	New Filter: HexDump
+	New Filter: Encrypt/Decrypt
+	New Filter: XML/Jason format
+
+	Macros Subsitution in Data Files (positional Params %1, %2 etc)
+	Params help prompts
+
+	Definable Logging (log to endpoint?)
+
+DONE:
+	New Endpoint type: process
