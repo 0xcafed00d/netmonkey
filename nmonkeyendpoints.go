@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/simulatedsimian/neo"
+	"github.com/tarm/goserial"
 	"io"
 	"log"
-	"github.com/simulatedsimian/neo"
 	"net"
 	"os"
 	"os/exec"
@@ -140,8 +141,13 @@ var endPointFactory = map[string]EndpointMaker{
 	},
 
 	"serialPort": func(name, config string, epch chan (EndPoint), errch chan (error)) {
-		log.Println("serialPort not implemented")
-		os.Exit(-1)
+		serconf := &serial.Config{Name: config, Baud: 9600}
+		s, err := serial.OpenPort(serconf)
+		if err != nil {
+			errch <- err
+		} else {
+			epch <- &EndPointImpl{s, s, s, name}
+		}
 	},
 
 	"process": func(name, config string, epch chan (EndPoint), errch chan (error)) {
