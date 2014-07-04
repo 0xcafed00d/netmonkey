@@ -9,6 +9,7 @@ import (
 	"net"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 )
 
@@ -141,7 +142,19 @@ var endPointFactory = map[string]EndpointMaker{
 	},
 
 	"serialPort": func(name, config string, epch chan (EndPoint), errch chan (error)) {
-		serconf := &serial.Config{Name: config, Baud: 9600}
+		params := strings.Split(config, ",")
+		if len(params) != 2 {
+			errch <- neo.ErrorStr("Invalid Params for serialPort")
+			return
+		}
+
+		baud, err := strconv.Atoi(params[1])
+		if err != nil {
+			errch <- neo.ErrorStr("Invalid baud rate for serial port")
+			return
+		}
+
+		serconf := &serial.Config{Name: params[0], Baud: baud}
 		s, err := serial.OpenPort(serconf)
 		if err != nil {
 			errch <- err
