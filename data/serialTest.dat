@@ -1,0 +1,12 @@
+#comment
+
+endpoint serial = serialPort(/dev/ttyACM0,19200)
+
+#fileReader(/dev/ttyACM0)
+endpoint stdio = stdio ()
+
+connect serial -> stdio
+
+
+
+
