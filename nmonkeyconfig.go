@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"io"
 	"github.com/simulatedsimian/neo"
+	"io"
 	"os"
 	"regexp"
 	"strings"
@@ -129,9 +129,11 @@ func processConnect(config *ConfigInfo, line string) error {
 }
 
 func printHelp(w io.Writer, config *ConfigInfo) {
-	fmt.Println(" Param Usage:")
-	for n := 0; n < len(config.Params); n++ {
-		fmt.Printf("   %10s: %s\n", config.Params[n].Name, config.Params[n].Desc)
+	if len(config.Params) > 0 {
+		fmt.Println(" Param Usage:")
+		for n := 0; n < len(config.Params); n++ {
+			fmt.Printf("   %10s: %s\n", config.Params[n].Name, config.Params[n].Desc)
+		}
 	}
 }
 

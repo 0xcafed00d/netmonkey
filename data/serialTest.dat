@@ -1,12 +1,9 @@
 #comment
 
-endpoint serial = serialPort(/dev/ttyACM0,19200)
+endpoint serialWin = serialPort(COM7,19200)
+#endpoint serialLinux = serialPort(/dev/ttyACM0,19200)
 
-#fileReader(/dev/ttyACM0)
 endpoint stdio = stdio ()
 
-connect serial -> stdio
-
-
-
+connect serialWin -> stdio
 
