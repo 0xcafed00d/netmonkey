@@ -1,7 +1,7 @@
 #comment
 
 endpoint rng  = fileReader (/dev/urandom)
-endpoint out  = stdout ()
+endpoint out  = stdio()
 endpoint null = null()
 
 connect rng -> delay(1, 100) -> toHex() -> out

@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/simulatedsimian/neo"
-	"github.com/tarm/goserial"
 	"io"
 	"log"
 	"net"
@@ -11,15 +9,17 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
+
+	serial "github.com/tarm/goserial"
 )
 
-var devNULL neo.NullReaderWriterCloser
+var devNULL NullReaderWriterCloser
 
 type EndPoint interface {
 	io.Reader
 	io.Writer
 	io.Closer
-	neo.Named
+	Named
 }
 
 type EndPointImpl struct {
@@ -144,13 +144,13 @@ var endPointFactory = map[string]EndpointMaker{
 	"serialPort": func(name, config string, epch chan (EndPoint), errch chan (error)) {
 		params := strings.Split(config, ",")
 		if len(params) != 2 {
-			errch <- neo.ErrorStr("Invalid Params for serialPort")
+			errch <- fmt.Errorf("invalid Params for serialPort")
 			return
 		}
 
 		baud, err := strconv.Atoi(params[1])
 		if err != nil {
-			errch <- neo.ErrorStr("Invalid baud rate for serial port")
+			errch <- fmt.Errorf("invalid baud rate for serial port")
 			return
 		}
 
@@ -206,7 +206,7 @@ func CreateEndPoint(epi *EndPointInfo, epch chan EndPoint, errch chan error) err
 	if maker, ok := endPointFactory[epi.Kind]; ok {
 		go maker(epi.Name, epi.Config, epch, errch)
 	} else {
-		return neo.ErrorStr(fmt.Sprintf("Unknown EndPoint Type: %s", epi.Kind))
+		return fmt.Errorf("unknown EndPoint Type: %s", epi.Kind)
 	}
 	return nil
 }

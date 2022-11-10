@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"github.com/simulatedsimian/neo"
 	"os"
 )
 
@@ -37,7 +36,7 @@ func CreateConnecton(c ConnectInfo, errch chan error) {
 
 	var source io.Reader = GetEndPoint(c.From)
 	if source == nil {
-		errch <- neo.ErrorStr(fmt.Sprintln("Unknown Endpoint name for conenction source: ", c.From))
+		errch <- fmt.Errorf("unknown Endpoint name for conenction source: %v", c.From)
 	}
 
 	for _, finfo := range c.Filters {
@@ -47,18 +46,18 @@ func CreateConnecton(c ConnectInfo, errch chan error) {
 				errch <- err
 				return
 			}
-			neo.ExitOnError(err, 1)
+			ExitOnError(err, 1)
 			filter.SetSource(source)
 			source = filter
 		} else {
-			errch <- neo.ErrorStr(fmt.Sprintln("Unknown Filter Type: ", finfo.Name))
+			errch <- fmt.Errorf("unknown Filter Type: %v", finfo.Name)
 			return
 		}
 	}
 
 	dest := GetEndPoint(c.To)
 	if dest == nil {
-		errch <- neo.ErrorStr(fmt.Sprintln("Unknown Endpoint name for connection destination: ", c.To))
+		errch <- fmt.Errorf("unknown Endpoint name for connection destination: %v", c.To)
 		return
 	}
 
@@ -93,10 +92,10 @@ func main() {
 	var requests []RequestEndPoint
 
 	config, err := ReadConfig(os.Args[1])
-	neo.ExitOnError(err, 1)
+	ExitOnError(err, 1)
 
 	err = CreateEndPoints(config.EndPoints, "", epch, errch)
-	neo.ExitOnError(err, 1)
+	ExitOnError(err, 1)
 
 	for _, c := range config.Connections {
 		go CreateConnecton(c, errch)
@@ -117,7 +116,7 @@ func main() {
 			for _, ep := range endPoints {
 				ep.Close()
 			}
-			neo.ExitOnError(err, 1)
+			ExitOnError(err, 1)
 		}
 
 		if len(requests) > 0 {

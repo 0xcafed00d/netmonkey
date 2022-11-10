@@ -2,8 +2,8 @@
 
 endpoint sockCon = socketConnect (www.google.com:80)
 endpoint sockLis = socketListen (:9090)
-endpoint stdin   = stdin ()
-endpoint stdout  = stdout ()
+endpoint stdin   = stdio ()
+endpoint stdout  = stdio ()
 endpoint stderr  = stderr ()
 endpoint filein  = fileReader (nm.go)
 endpoint fileout = fileWriter (test.out)

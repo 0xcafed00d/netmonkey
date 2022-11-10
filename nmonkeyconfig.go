@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/simulatedsimian/neo"
 	"io"
 	"os"
 	"regexp"
@@ -42,7 +41,7 @@ var (
 func processParam(config *ConfigInfo, line string) error {
 	parts := paramRegexp.FindStringSubmatch(line)
 	if len(parts) != 3 {
-		return neo.ErrorStr("Invalid Param Definition: " + line)
+		return fmt.Errorf("Invalid Param Definition: %v" + line)
 	}
 
 	pinfo := ParamInfo{parts[1], parts[2]}
@@ -59,13 +58,13 @@ func locateParamIndex(config *ConfigInfo, paramName string) (int, error) {
 		}
 	}
 
-	return 0, neo.ErrorStr("Param: " + paramName + " not Found")
+	return 0, fmt.Errorf("param: %v  not Found", paramName)
 }
 
 func replaceParams(config *ConfigInfo, line string) (string, error) {
 	for n := 0; n < len(config.Params); n++ {
 		if len(config.CmdLine) <= n {
-			return line, neo.ErrorStr("No value provided for param: " + config.Params[n].Name)
+			return line, fmt.Errorf("no value provided for param: %v", config.Params[n].Name)
 		}
 
 		line = strings.Replace(line, "[$"+config.Params[n].Name+"$]", config.CmdLine[n], -1)
@@ -93,7 +92,7 @@ func processEndPoint(config *ConfigInfo, line string) error {
 		return nil
 	}
 
-	return neo.ErrorStr("Invalid Endpoint Definition: " + line)
+	return fmt.Errorf("invalid Endpoint Definition: %v", line)
 }
 
 func processConnect(config *ConfigInfo, line string) error {
@@ -107,7 +106,7 @@ func processConnect(config *ConfigInfo, line string) error {
 	parts := strings.Split(line, "->")
 
 	if len(parts) < 2 {
-		return neo.ErrorStr("Invalid Connection: " + line)
+		return fmt.Errorf("invalid Connection: %v", line)
 	}
 
 	var ci ConnectInfo
@@ -119,7 +118,7 @@ func processConnect(config *ConfigInfo, line string) error {
 		if len(filter) == 3 {
 			ci.Filters = append(ci.Filters, FilterInfo{filter[1], filter[2]})
 		} else {
-			return neo.ErrorStr("Invalid Filter: " + parts[i])
+			return fmt.Errorf("invalid Filter: %v", parts[i])
 		}
 	}
 
@@ -146,7 +145,7 @@ func ReadConfig(fname string) (*ConfigInfo, error) {
 		config.CmdLine = append(config.CmdLine, os.Args[2:]...)
 	}
 
-	err := neo.ReadFile(fname, func(l string) error {
+	err := ReadFile(fname, func(l string) error {
 		lineCount++
 		line := strings.TrimSpace(l)
 
@@ -159,20 +158,20 @@ func ReadConfig(fname string) (*ConfigInfo, error) {
 
 		if strings.HasPrefix(line, "#") {
 			// # is a comment ignore line
-		} else if line, ok = neo.TryTrimPrefix(line, "endpoint"); ok {
+		} else if line, ok = TryTrimPrefix(line, "endpoint"); ok {
 			err = processEndPoint(&config, line)
-		} else if line, ok = neo.TryTrimPrefix(line, "connect"); ok {
+		} else if line, ok = TryTrimPrefix(line, "connect"); ok {
 			err = processConnect(&config, line)
-		} else if line, ok = neo.TryTrimPrefix(line, "param"); ok {
+		} else if line, ok = TryTrimPrefix(line, "param"); ok {
 			err = processParam(&config, line)
 		} else {
-			err = neo.ErrorStr("Unrecognised Line: [" + l + "]")
+			err = fmt.Errorf("unrecognised Line: [%v]", l)
 		}
 		return err
 	})
 
 	if err != nil {
-		err = &neo.ErrorWrapper{fmt.Sprintf("Error On Line: %d", lineCount), err}
+		err = fmt.Errorf("error On Line: %d :%w", lineCount, err)
 	}
 
 	printHelp(os.Stdout, &config)

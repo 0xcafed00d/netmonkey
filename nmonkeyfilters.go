@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"io"
-	"github.com/simulatedsimian/neo"
 	"time"
 )
 
@@ -13,7 +12,9 @@ type Filter interface {
 }
 
 // =========================================================================================================
-//		NullFilter
+//
+//	NullFilter
+//
 // =========================================================================================================
 type NullFilter struct {
 	src io.Reader
@@ -41,7 +42,7 @@ func MakeTapFilter(config string) (Filter, error) {
 		return &TapFilter{tapDest: ep}, nil
 	}
 
-	return nil, neo.ErrorStr(fmt.Sprintln("Unknown Endpoint name for tap Filter destination: ", config))
+	return nil, fmt.Errorf("unknown Endpoint name for tap Filter destination: %v", config)
 }
 
 func (f *TapFilter) Read(p []byte) (int, error) {
@@ -59,7 +60,9 @@ func (f *TapFilter) Read(p []byte) (int, error) {
 }
 
 // =========================================================================================================
-//		ToHexFilter
+//
+//	ToHexFilter
+//
 // =========================================================================================================
 type ToHexFilter struct {
 	NullFilter
@@ -119,7 +122,9 @@ func (f *EatEOFFilter) Read(p []byte) (int, error) {
 }
 
 // =========================================================================================================
-//		Delay Filter: delay(delayMS, blockSize)
+//
+//	Delay Filter: delay(delayMS, blockSize)
+//
 // =========================================================================================================
 // http://play.golang.org/p/bLJ9mMrVHc
 type DelayFilter struct {
@@ -181,7 +186,7 @@ var FilterFactory = map[string]FilterMaker{
 		var chunksize, delayMS int
 		_, err := fmt.Sscanf(config, "%d,%d", &chunksize, &delayMS)
 		if err != nil {
-			return nil, &neo.ErrorWrapper{fmt.Sprintf("Error making delay(%s) filter", config), err}
+			return nil, fmt.Errorf("error making delay(%s) filter %w", config, err)
 		}
 		return MakeDelayFilter(chunksize, delayMS), nil
 	},
